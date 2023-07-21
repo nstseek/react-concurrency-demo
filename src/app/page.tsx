@@ -1,95 +1,87 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import React, { ComponentProps } from "react";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import { Header, STab } from "./styles";
+import { TabViewer } from "./components/TabViewer";
+import { LegacySearch } from "./components/LegacySearch";
+import { DeferredValueSearch } from "./components/DeferredValueSearch";
+import { InfoBox } from "./components/InfoBox";
+import { DefaultSleepTime } from "./utils/sleep";
 
 export default function Home() {
+  const [currentTab, setCurrentTab] = React.useState(0);
+
+  const handleTabChange: ComponentProps<typeof Tabs>["onChange"] = (
+    _,
+    newTab
+  ) => {
+    setCurrentTab(newTab);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <Header position="static">
+        <Toolbar>
+          <Typography variant="h6">React Concurrency Example (2023)</Typography>
+        </Toolbar>
+        <Tabs
+          value={currentTab}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="React modes"
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          <STab label="Legacy Mode" />
+          <STab label="Concurrent Mode (deferred value)" />
+        </Tabs>
+      </Header>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      <Box padding={2}>
+        <InfoBox title="This is a demonstration of React Concurrent Features. (a.k.a. Concurrent Mode)">
+          <Typography variant="body2">
+            Every time you type something in this input field, the page will
+            search for the string you typed in a hardcoded JSON.
+          </Typography>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+          <Typography variant="body2">
+            The search method will also block the JS execution by{" "}
+            {DefaultSleepTime}ms to simulate some heavy processing on the main
+            thread.
+          </Typography>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+          <Typography variant="body2">
+            If you choose Legacy Mode, you will see that the input field will
+            freeze every time you type something, because React is now doing
+            some simulated heavy computing searching the list for your typed
+            string.
+          </Typography>
+
+          <Typography variant="body2">
+            If you turn Concurrent Mode, you will see that React will prioritize
+            your typing instead of blocking the main thread completely while
+            doing the heavy search, making the interface responsible at all
+            times.
+          </Typography>
+
+          <Typography variant="caption">
+            (Remember that Concurrent Mode is the way it was called a few years
+            ago by the React team, it is now called Concurrent Features since
+            there is not a switch or anything like that that turns Concurrent
+            Mode on, it is just there, in React&lsquo;s engine on v18+)
+          </Typography>
+        </InfoBox>
+
+        <TabViewer currentValue={currentTab} tabValue={0}>
+          <LegacySearch />
+        </TabViewer>
+        <TabViewer currentValue={currentTab} tabValue={1}>
+          <DeferredValueSearch />
+        </TabViewer>
+      </Box>
+    </div>
+  );
 }
