@@ -1,3 +1,13 @@
+## React Concurrency Demo
+
+This project quickly demonstrates how new React Concurrency Features work in v18.
+
+It implements a search bar that has a legacy implementation and a concurrent implementation, allowing you to toggle between both modes.
+
+It also contains a few paragraphs explaining the logic behind each mode.
+
+You can check it right [here](https://react-concurrency-demo.vercel.app/)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
